@@ -1,4 +1,5 @@
 import requests,bs4,re
+#import time
 
 def getContent(url,head):
     req = requests.get(url,headers = head)
@@ -11,11 +12,11 @@ def getContent(url,head):
     return nameText,contentText
 
 def saveFile(bookName,nameText,contentText):    #writing chapter and content
-    with open(bookName + '.txt', "a",) as f:
-        f.write('\n\n')                                        #每章前增加换行，排版美观
-        f.write(nameText)
-        f.write(contentText)
-        print(nameText + ' 下载完成')        
+#    with open(bookName + '.txt', "a",) as f:
+    f.write('\n\n')                                        #每章前增加换行，排版美观
+    f.write(nameText)
+    f.write(contentText)
+    print(nameText + ' 下载完成')        
 
 def getBookname(url,head):
     bookUrl = url.split('/')
@@ -41,16 +42,18 @@ def getUrl(url,head):
                 return False      
        
 
+#starttime = time.time()
 url = 'https://www.booktxt.net/5_5170/2372499.html'  #first chapter
 head = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36'}
 nameText,contentText = getContent(url,head)  #save the firstpage
 bookUrl,bookName = getBookname(url,head)
-saveFile(bookName,nameText,contentText)
-
-#test
-#for i in range(10):
-while getUrl(url,head):
-    url = bookUrl + '/'+ getUrl(url,head)  #get next page url
-    #print(url)
-    nameText,contentText = getContent(url,head)
-    saveFile(bookName,nameText,contentText)
+with open(bookName + '.txt', "a",) as f:
+    saveFile(bookName,nameText,contentText)    #保存第一章
+    #for i in range(10):  #test
+    while getUrl(url,head):
+        url = bookUrl + '/'+ getUrl(url,head)  #get next page url
+        nameText,contentText = getContent(url,head)
+        saveFile(bookName,nameText,contentText)
+    
+#endtime = time.time()
+#endtime - starttime
